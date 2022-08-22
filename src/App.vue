@@ -3,7 +3,7 @@
     <div class="outer-wrapper">
       <dynamic-marquee direction="column" reverse>
         <ul v-if="!notZero">
-          <li v-for="i in liNum" :key="i">Item {{i}}</li>
+          <li v-for="i in liNum" :key="i">Item {{ i }}</li>
         </ul>
       </dynamic-marquee>
     </div>
@@ -15,11 +15,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import DynamicMarquee from './components/DynamicMarquee';
+import Vue from "vue";
+import DynamicMarquee from "./components/DynamicMarquee";
 
 export default Vue.extend({
-  name: 'app',
+  name: "app",
   components: {
     DynamicMarquee,
   },

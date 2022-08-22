@@ -1,6 +1,5 @@
-
-import Vue, { VNode } from 'vue';
-import DynamicMarqueeElement from './DynamicMarqueeElement';
+import Vue, { VNode } from "vue";
+import DynamicMarqueeElement from "./DynamicMarqueeElement";
 
 interface ProgressElement {
   progress: number;
@@ -8,7 +7,7 @@ interface ProgressElement {
 }
 
 export default Vue.extend({
-  name: 'dynamic-marquee',
+  name: "dynamic-marquee",
   components: {
     DynamicMarqueeElement,
   },
@@ -17,14 +16,14 @@ export default Vue.extend({
       type: Object,
       default() {
         return {
-          type: 'pps',
+          type: "pps",
           number: 100,
         };
       },
       validator(val) {
         return (
           val.type &&
-          ['pps', 'duration'].includes(val.type) &&
+          ["pps", "duration"].includes(val.type) &&
           val.number &&
           !isNaN(val.number)
         );
@@ -48,9 +47,9 @@ export default Vue.extend({
     },
     direction: {
       type: String,
-      default: 'column',
+      default: "column",
       validator(val) {
-        return ['column', 'row'].includes(val);
+        return ["column", "row"].includes(val);
       },
     },
     reverse: {
@@ -62,7 +61,7 @@ export default Vue.extend({
     return {
       wrapperDimension: 0,
       marqueeDimension: 0,
-      wrapperDirection: '',
+      wrapperDirection: "",
       repeatNum: 1,
       lastId: 0,
       marqueeElement: null as HTMLElement | null,
@@ -83,7 +82,7 @@ export default Vue.extend({
         inTest: false,
         wrapperDimension: 120,
         marqueeDimension: 20,
-        wrapperDirection: 'ltr',
+        wrapperDirection: "ltr",
       },
     };
   },
@@ -93,15 +92,15 @@ export default Vue.extend({
     },
     dimension() {
       switch (this.direction) {
-        case 'row':
-          return 'width';
-        case 'column':
+        case "row":
+          return "width";
+        case "column":
         default:
-          return 'height';
+          return "height";
       }
     },
     sign() {
-      return this.reverse ? '-' : '+';
+      return this.reverse ? "-" : "+";
     },
   },
   methods: {
@@ -126,9 +125,8 @@ export default Vue.extend({
       if (this.testData.inTest) {
         this.marqueeDimension = this.testData.marqueeDimension;
       } else {
-        this.marqueeDimension = this.marqueeElement.getBoundingClientRect()[
-          this.dimension
-        ];
+        this.marqueeDimension =
+          this.marqueeElement.getBoundingClientRect()[this.dimension];
       }
     },
     calcDimensions() {
@@ -137,7 +135,7 @@ export default Vue.extend({
     },
     calcRepeatNum() {
       const timesInWrapper = Math.ceil(
-        this.wrapperDimension / (this.marqueeDimension + this.repeatMargin),
+        this.wrapperDimension / (this.marqueeDimension + this.repeatMargin)
       );
       return timesInWrapper + 1;
     },
@@ -168,9 +166,9 @@ export default Vue.extend({
     },
     getCurrentProgress(elapsed: number) {
       switch (this.speed.type) {
-        case 'pps':
+        case "pps":
           return this.ppsProgressFromElapsed(elapsed);
-        case 'duration':
+        case "duration":
           return this.durationProgressFromElapsed(elapsed);
         default:
           return 0;
@@ -192,7 +190,7 @@ export default Vue.extend({
             this.wrapperDimension
           ) {
             const newProgress = this.signNum(
-              emptyWrapperSpace - this.repeatMargin,
+              emptyWrapperSpace - this.repeatMargin
             );
             toAnimate.progress = +newProgress;
           }
@@ -227,10 +225,10 @@ export default Vue.extend({
     togglePause(event: Event) {
       if (this.hoverPause) {
         switch (event.type) {
-          case 'mouseenter':
+          case "mouseenter":
             this.pauseInner = true;
             break;
-          case 'mouseleave':
+          case "mouseleave":
             this.pauseInner = false;
         }
       }
@@ -240,15 +238,14 @@ export default Vue.extend({
         this.wrapperDirection = this.testData.wrapperDirection;
       } else {
         const wrapper = this.$refs.wrapper as HTMLElement;
-        this.wrapperDirection = getComputedStyle(wrapper).getPropertyValue(
-          'direction',
-        );
+        this.wrapperDirection =
+          getComputedStyle(wrapper).getPropertyValue("direction");
       }
     },
     async setResizeObserver() {
-      if ('ResizeObserver' in window === false) {
+      if ("ResizeObserver" in window === false) {
         // Loads polyfill asynchronously, only if required.
-        const module = await import('@juggle/resize-observer');
+        const module = await import("@juggle/resize-observer");
         // @ts-ignore
         window.ResizeObserver = module.ResizeObserver;
       }
@@ -306,8 +303,8 @@ export default Vue.extend({
           for (let i = 0; i < difference; i++) {
             // TODO: verify this is necessary
             const arr = this.animatedElements.length
-              ? 'unanimatedElements'
-              : 'animatedElements';
+              ? "unanimatedElements"
+              : "animatedElements";
             this[arr].push({
               progress: 0,
               id: ++this.lastId,
@@ -379,7 +376,12 @@ export default Vue.extend({
     },
     fireAnimation(currentTime: number) {
       const longPause = currentTime - this.lastTime > 100;
-      if (!this.pause && !this.pauseInner && !longPause && !this.marqueeNoDimension) {
+      if (
+        !this.pause &&
+        !this.pauseInner &&
+        !longPause &&
+        !this.marqueeNoDimension
+      ) {
         this.calcTranslation(currentTime);
       }
       this.updateLastTime(currentTime);
@@ -387,14 +389,14 @@ export default Vue.extend({
     },
   },
   watch: {
-    repeat: 'resetAnimation',
-    repeatMargin: 'resetAnimation',
-    direction: 'resetAnimation',
-    reverse: 'resetAnimation',
-    'testData.wrapperDimension'(newValue) {
+    repeat: "resetAnimation",
+    repeatMargin: "resetAnimation",
+    direction: "resetAnimation",
+    reverse: "resetAnimation",
+    "testData.wrapperDimension"(newValue) {
       this.onWrapperResize(newValue);
     },
-    'testData.marqueeDimension'(newValue) {
+    "testData.marqueeDimension"(newValue) {
       this.onMarqueeElementResize(newValue);
     },
   },
@@ -411,14 +413,14 @@ export default Vue.extend({
   },
   render(h): VNode {
     return h(
-      'div',
+      "div",
       {
-        ref: 'wrapper',
+        ref: "wrapper",
         style: {
-          overflow: 'hidden',
-          height: '100%',
-          width: '100%',
-          position: 'relative',
+          overflow: "hidden",
+          height: "100%",
+          width: "100%",
+          position: "relative",
         },
         on: {
           mouseenter: this.togglePause,
@@ -429,7 +431,7 @@ export default Vue.extend({
         return h(
           DynamicMarqueeElement,
           {
-            ref: 'marqueeComponents',
+            ref: "marqueeComponents",
             refInFor: true,
             key: el.id,
             props: {
@@ -439,9 +441,9 @@ export default Vue.extend({
               wrapperDirection: this.wrapperDirection,
             },
           },
-          this.$slots.default,
+          this.$slots.default
         );
-      }),
+      })
     );
   },
 });
